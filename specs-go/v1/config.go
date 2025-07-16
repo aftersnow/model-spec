@@ -131,6 +131,48 @@ type ModelCapabilities struct {
 	Reward *bool `json:"reward,omitempty"`
 }
 
+// Common Model Architectures
+const (
+	ArchitectureTransformer = "transformer"
+	ArchitectureCNN         = "cnn"
+	ArchitectureRNN         = "rnn"
+	ArchitectureLSTM        = "lstm"
+	ArchitectureGRU         = "gru"
+	ArchitectureDiffusion   = "diffusion"
+	ArchitectureVAE         = "vae"
+	ArchitectureGAN         = "gan"
+)
+
+// Common Model Formats
+const (
+	FormatONNX       = "onnx"
+	FormatTensorFlow = "tensorflow"
+	FormatPyTorch    = "pytorch"
+	FormatSafetensors = "safetensors"
+	FormatJAX        = "jax"
+	FormatPaddlePaddle = "paddlepaddle"
+	FormatMLX        = "mlx"
+	FormatGGUF       = "gguf"
+)
+
+// Common Model Precisions
+const (
+	PrecisionFP32  = "fp32"
+	PrecisionFP16  = "fp16"
+	PrecisionBF16  = "bf16"
+	PrecisionINT8  = "int8"
+	PrecisionINT4  = "int4"
+	PrecisionMixed = "mixed"
+)
+
+// Common Quantization Methods
+const (
+	QuantizationAWQ   = "awq"
+	QuantizationGPTQ  = "gptq"
+	QuantizationBNB   = "bnb"
+	QuantizationQLoRA = "qlora"
+)
+
 // Model defines the basic information of a model.
 // It provides the `application/vnd.cncf.model.config.v1+json` mediatype when marshalled to JSON.
 type Model struct {

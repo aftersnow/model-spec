@@ -19,6 +19,102 @@ This specification provides a compatible way to package and distribute models ba
 
 For details, please see [the specification](docs/spec.md).
 
+## Usage Examples
+
+### Creating a Model Configuration
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "time"
+    
+    v1 "github.com/modelpack/model-spec/specs-go/v1"
+    "github.com/opencontainers/go-digest"
+)
+
+func main() {
+    // Create a model configuration
+    model := v1.Model{
+        Descriptor: v1.ModelDescriptor{
+            Name:        "llama3-8b-instruct",
+            Family:      "llama3",
+            Version:     "3.1",
+            Authors:     []string{"meta-llama@meta.com"},
+            Title:       "Llama 3 8B Instruct",
+            Description: "Llama 3 is a large language model developed by Meta.",
+            DocURL:      "https://llama.meta.com/",
+            Licenses:    []string{"Apache-2.0"},
+            CreatedAt:   &time.Time{},
+        },
+        Config: v1.ModelConfig{
+            Architecture: v1.ArchitectureTransformer,
+            Format:       v1.FormatPyTorch,
+            ParamSize:    "8b",
+            Precision:    v1.PrecisionFP16,
+            Capabilities: &v1.ModelCapabilities{
+                InputTypes:  []v1.Modality{v1.TextModality},
+                OutputTypes: []v1.Modality{v1.TextModality},
+                Reasoning:   &[]bool{true}[0],
+                ToolUsage:   &[]bool{true}[0],
+            },
+        },
+        ModelFS: v1.ModelFS{
+            Type: "layers",
+            DiffIDs: []digest.Digest{
+                digest.FromString("model-weights-layer"),
+            },
+        },
+    }
+    
+    // Marshal to JSON
+    jsonData, _ := json.MarshalIndent(model, "", "  ")
+    fmt.Println(string(jsonData))
+}
+```
+
+### Validating a Model Configuration
+
+```go
+package main
+
+import (
+    "bytes"
+    "log"
+    
+    "github.com/modelpack/model-spec/schema"
+)
+
+func main() {
+    // Your model configuration JSON
+    configJSON := []byte(`{
+        "descriptor": {
+            "name": "my-model",
+            "version": "1.0"
+        },
+        "config": {
+            "architecture": "transformer",
+            "format": "onnx"
+        },
+        "modelfs": {
+            "type": "layers",
+            "diffIds": ["sha256:..."]
+        }
+    }`)
+    
+    // Validate the configuration
+    validator := schema.ValidatorMediaTypeModelConfig
+    err := validator.Validate(bytes.NewReader(configJSON))
+    if err != nil {
+        log.Fatalf("Validation failed: %v", err)
+    }
+    
+    log.Println("Model configuration is valid!")
+}
+```
+
 ## LICENSE
 
 Apache 2.0 License. Please see [LICENSE](LICENSE) for more information.

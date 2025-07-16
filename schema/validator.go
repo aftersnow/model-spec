@@ -114,11 +114,67 @@ var validateByMediaType = map[Validator]validateFunc{
 }
 
 func validateConfig(buf []byte) error {
-	mc := v1.ModelConfig{}
+	mc := v1.Model{}
 
 	err := json.Unmarshal(buf, &mc)
 	if err != nil {
 		return fmt.Errorf("config format mismatch: %w", err)
+	}
+
+	// Validate required fields
+	if mc.Descriptor.Name == "" && mc.Descriptor.Family == "" {
+		return fmt.Errorf("model descriptor must have either name or family")
+	}
+
+	// Validate modelfs
+	if mc.ModelFS.Type != "layers" {
+		return fmt.Errorf("modelfs.type must be 'layers', got %q", mc.ModelFS.Type)
+	}
+	
+	if len(mc.ModelFS.DiffIDs) == 0 {
+		return fmt.Errorf("modelfs.diffIds must not be empty")
+	}
+
+	// Validate config fields if present
+	if mc.Config.Architecture != "" {
+		validArchitectures := map[string]bool{
+			v1.ArchitectureTransformer: true,
+			v1.ArchitectureCNN:         true,
+			v1.ArchitectureRNN:         true,
+			v1.ArchitectureLSTM:        true,
+			v1.ArchitectureGRU:         true,
+			v1.ArchitectureDiffusion:   true,
+			v1.ArchitectureVAE:         true,
+			v1.ArchitectureGAN:         true,
+		}
+		if !validArchitectures[mc.Config.Architecture] {
+			// Log warning but don't fail - allow custom architectures
+			// This is just for awareness
+		}
+	}
+
+	// Validate modalities
+	if mc.Config.Capabilities != nil {
+		validModalities := map[v1.Modality]bool{
+			v1.TextModality:      true,
+			v1.ImageModality:     true,
+			v1.AudioModality:     true,
+			v1.VideoModality:     true,
+			v1.EmbeddingModality: true,
+			v1.OtherModality:     true,
+		}
+		
+		for _, m := range mc.Config.Capabilities.InputTypes {
+			if !validModalities[m] {
+				return fmt.Errorf("invalid input modality: %q", m)
+			}
+		}
+		
+		for _, m := range mc.Config.Capabilities.OutputTypes {
+			if !validModalities[m] {
+				return fmt.Errorf("invalid output modality: %q", m)
+			}
+		}
 	}
 
 	return nil
