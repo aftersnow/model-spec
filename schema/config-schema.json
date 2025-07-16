@@ -25,19 +25,24 @@
         "type": "object",
         "properties": {
           "architecture": {
-            "type": "string"
+            "type": "string",
+            "enum": ["transformer", "cnn", "rnn", "lstm", "gru", "bert", "gpt", "resnet", "vit", "gan", "vae", "diffusion", "other"]
           },
           "format": {
-            "type": "string"
+            "type": "string",
+            "enum": ["onnx", "safetensors", "gguf", "pt", "pytorch", "tensorflow", "tf", "tflite", "coreml", "openvino", "other"]
           },
           "paramSize": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d)?[qQtTbBmMkK]$"
           },
           "precision": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(float32|float64|float16|bfloat16|float8_e4m3|float8_e5m2|complex32|complex64|complex128|int8|int16|int32|int64|uint8|uint16|uint32|uint64|bool|mixed|fp32|fp16|bf16|fp8|int4|fp64)(,(float32|float64|float16|bfloat16|float8_e4m3|float8_e5m2|complex32|complex64|complex128|int8|int16|int32|int64|uint8|uint16|uint32|uint64|bool|mixed|fp32|fp16|bf16|fp8|int4|fp64))*$"
           },
           "quantization": {
-            "type": "string"
+            "type": "string",
+            "enum": ["awq", "gptq", "gguf", "bnb", "int8", "int4", "nf4", "fp4", "other"]
           },
           "capabilities": {
             "$ref": "#/$defs/ModelCapabilities"
@@ -66,10 +71,12 @@
             "minLength": 1
           },
           "docURL": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           },
           "sourceURL": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           },
           "version": {
             "type": "string"
@@ -139,6 +146,12 @@
             "type": "boolean"
           },
           "toolUsage": {
+            "type": "boolean"
+          },
+          "embedding": {
+            "type": "boolean"
+          },
+          "reward": {
             "type": "boolean"
           }
         }
