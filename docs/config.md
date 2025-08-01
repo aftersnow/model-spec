@@ -77,7 +77,7 @@ The following terms are used in this section:
 
   - **architecture_config** _object_, OPTIONAL
 
-    The configuration of the architecture. the details are defined in the [Architecture](./architectures.md) file.
+    The configuration of the architecture. The details are defined in the [Architecture](./architecture.md) file.
 
   - **format** _string_, OPTIONAL
 
