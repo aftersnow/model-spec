@@ -192,7 +192,7 @@ The transformer is the most popular architecture for LLMs. It consists of a stac
 
       - **moe** _object_, OPTIONAL
 
-        MoE configuration parameters. Either mlp or moe must be specified.
+        MoE configuration parameters.
 
         - **has_bias** _boolean_, REQUIRED
 
